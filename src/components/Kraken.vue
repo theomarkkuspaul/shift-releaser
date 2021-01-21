@@ -29,19 +29,19 @@
 </template>
 
 <script>
-export default {
-  name: 'Kraken',
-  data () {
-      return {
-          rawTicketData: '',
-          tickets: [],
-          emojis: '',
-          rawTitle: '',
-          generatedTitle: '',
-      };
-  },
-  methods: {
-    generateReleaseNotes () {
+    export default {
+      name: 'Kraken',
+      data () {
+          return {
+              rawTicketData: '',
+              tickets: [],
+              emojis: '',
+              rawTitle: '',
+              generatedTitle: '',
+          };
+      },
+      methods: {
+        generateReleaseNotes () {
         // clear tickets
         this.tickets = [];
 
@@ -67,10 +67,36 @@ export default {
         }
     },
     generateEmojiTitle () {
-        this.generatedTitle = `${ this.emojis } ${this.rawTitle} ${ this.emojis.split('').reverse().join('') }`
-        console.log(this.generatedTitle);
+        let emojiCollection = [];
+        let currentEmoji = [];
+
+        this.emojis.split('').forEach((el, idx, arr) => {
+            if (idx == 0) {
+                currentEmoji.push(el);
+                return;
+            }
+
+            if (idx % 2 == 0) {
+                emojiCollection.push(currentEmoji);
+                currentEmoji = [];
+            }
+
+            if (idx+1 == arr.length) {
+                currentEmoji.push(el);
+                emojiCollection.push(currentEmoji);
+                currentEmoji = [];
+            }
+
+            currentEmoji.push(el)
+        });
+
+        const newEmojis = emojiCollection.reverse().map(emoji => {
+            return emoji.reduce((el, nextEl) => el + nextEl)
+        }).join('');
+
+        this.generatedTitle = `${ this.emojis } ${this.rawTitle} ${newEmojis}`
     }
-  },
+},
 }
 
 // 🤞🦆💪
@@ -78,33 +104,33 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    h1 {
-        color: cornflowerblue;
-    }
+h1 {
+    color: cornflowerblue;
+}
 
-    textarea {
-        display: block;
-        margin: auto;
-        margin-bottom: 1rem;
-    }
+textarea {
+    display: block;
+    margin: auto;
+    margin-bottom: 1rem;
+}
 
-    button {
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        font-weight: bold;
-        width: 200px;
-        height: 40px;
-        border-radius: 5px;
-        background: none;
-        border: 2px solid black;
-        cursor: pointer;
-    }
+button {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    background: none;
+    border: 2px solid black;
+    cursor: pointer;
+}
 
-    ul {
-        text-align: left;
-        list-style-type: none;
-    }
+ul {
+    text-align: left;
+    list-style-type: none;
+}
 
-    ul li a {
-        text-decoration: none;
-    }
+ul li a {
+    text-decoration: none;
+}
 </style>
